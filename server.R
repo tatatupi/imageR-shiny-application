@@ -15,22 +15,13 @@ library(png)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-  # output$distPlot <- renderPlot({
-  #   
-  #   # generate bins based on input$bins from ui.R
-  #   x    <- faithful[, 2] 
-  #   bins <- seq(min(x), max(x), length.out = input$bins + 1)
-  #   
-  #   # draw the histogram with the specified number of bins
-  #   hist(x, breaks = bins, col = 'darkgray', border = 'white')
-  #   
-  # })
+
+  im <- load.image("./coins.png")
   
-  im <- load.example("coins")
   
   output$preImage <- renderImage({
     # Return a list containing the filename and alt text
-    imOut <- t(coins[,,1,1])
+    imOut <- t(im[,,1,1])
     outfile <- tempfile(fileext = ".png")
     writePNG(imOut, target = outfile)
     
@@ -61,6 +52,12 @@ shinyServer(function(input, output) {
   }, deleteFile = TRUE)
   
   output$water <- renderImage({
+    
+    d <- as.data.frame(im)
+    ##Subsamble, fit a linear model
+    m <- sample_n(d,input$samples) %>% lm(value ~ x*y,data=.) 
+    ##Correct by removing the trend
+    im.c <- im-predict(m,d)
     
     bgPercent <- paste(toString(input$bgValue),"%",sep="")
     fgPercent <- paste(toString(100-input$bgValue),"%",sep="")

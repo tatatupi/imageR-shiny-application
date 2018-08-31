@@ -20,9 +20,9 @@ shinyUI(fluidPage(
     sidebarPanel(
       numericInput("samples",
                    label="Number of Samples", 
-                   min = 1, 
+                   min = 10, 
                    max = 1000000, step = 1,
-                   value = 1),
+                   value = 10),
        sliderInput("bgValue",
                    label="Background Pixels %", 
                    min = 1, 
