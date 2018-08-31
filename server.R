@@ -18,7 +18,6 @@ shinyServer(function(input, output) {
 
   im <- load.image("./coins.png")
   
-  
   output$preImage <- renderImage({
     # Return a list containing the filename and alt text
     imOut <- t(im[,,1,1])
@@ -31,7 +30,7 @@ shinyServer(function(input, output) {
   }, deleteFile = FALSE)
   
   
-  output$thresh <- renderImage({
+  output$thresh <- renderPlot({
     
     d <- as.data.frame(im)
     ##Subsamble, fit a linear model
@@ -42,16 +41,11 @@ shinyServer(function(input, output) {
     out <- clean(out,3) %>% imager::fill(7)
     plot(im,main="Thresholding")
     highlight(out)
-    
-    dev.copy(png,'thresh.png')
-    dev.off()
-    
-    list(src = "thresh.png",
-         contentType = "image/png",
-         alt = "This is alternate text")
-  }, deleteFile = TRUE)
+
+  })
+
   
-  output$water <- renderImage({
+  output$water <- renderPlot({
     
     d <- as.data.frame(im)
     ##Subsamble, fit a linear model
@@ -64,7 +58,6 @@ shinyServer(function(input, output) {
     
     bg <- (!threshold(im.c,bgPercent))
     fg <- (threshold(im.c,fgPercent))
-    imlist(fg,bg) %>% plot(layout="row")
     #Build a seed image where fg pixels have value 2, bg 1, and the rest are 0
     seed <- bg+2*fg
     
@@ -78,22 +71,8 @@ shinyServer(function(input, output) {
     plot(im,main="Watershed")
     out2 <- clean(ws,5)
     highlight(out2,col="green")
-    
-    dev.copy(png,'water.png')
-    dev.off()
-    
-    list(src = "water.png",
-         contentType = "image/png",
-         alt = "This is alternate text")
-  }, deleteFile = TRUE)
+
+  })
   
-  
-  
-  
-  # 
-  # output$outImage <- renderImage({
-  #   
-  # }
-  # 
-  
+
 })

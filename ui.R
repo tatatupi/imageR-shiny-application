@@ -22,12 +22,12 @@ shinyUI(fluidPage(
                    label="Number of Samples", 
                    min = 10, 
                    max = 1000000, step = 1,
-                   value = 10),
+                   value = 100),
        sliderInput("bgValue",
                    label="Background Pixels %", 
                    min = 1, 
                    max = 100, post  = " %", 
-                   value = 50),
+                   value = 45),
        submitButton("Submit")
     ),
     
