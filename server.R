@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
     im.c <- im-predict(m,d)
     out <- threshold(im.c)
     out <- clean(out,3) %>% imager::fill(7)
-    plot(im,main="Thresholding")
+    plot(im,main="Thresholding",axes=FALSE)
     highlight(out)
 
   })
@@ -68,7 +68,7 @@ shinyServer(function(input, output) {
     
     ws <- bucketfill(ws,1,1,color=2) %>% {!( . == 2) }
     
-    plot(im,main="Watershed")
+    plot(im,main="Watershed",axes=FALSE)
     out2 <- clean(ws,5)
     highlight(out2,col="green")
 

@@ -1,0 +1,59 @@
+---
+title: "Reproducible Pitch"
+subtitle: "Course Project - Developing Data Products"
+author: "Taiguara Tupinambás"
+date: "September 1, 2018"
+output: 
+  ioslides_presentation:
+      font_adjustment: -1
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(imager)
+library(dplyr)
+library(png)
+im <- load.image('./coins.png')
+```
+
+## Image Segmentation
+
+Image segmentation methods are used to break down an image into meaningful regions.  
+
+```{r echo=FALSE}
+fig <- load.image("./imageSegmentation.png")
+plot(fig, axes=FALSE)
+```
+
+## Example
+
+We will use a greyscale coin image as an example, for which we wish to identify the coins.
+
+For that, two models are developed: simple thresholding method with linear method and watershed.
+The user can determine the number of samples and the background pixel percentage.
+
+```{r echo=FALSE, out.width = '600px', out.height = '350px', fig.align='center'}
+fig <- load.image("./userInput.png")
+plot(fig, axes=FALSE)
+```
+
+## Thresholding with 10000 samples {.smaller}
+
+```{r thresh, echo = TRUE, size='tiny'}
+    d <- as.data.frame(im)
+    m <- sample_n(d,10000) %>% lm(value ~ x*y,data=.) 
+    im.c <- im-predict(m,d)
+    out <- threshold(im.c)
+    out <- clean(out,3) %>% imager::fill(7)
+    plot(im,axes=FALSE); highlight(out)
+```
+
+## Watershed with 10% background pixels {.smaller}
+```{r water, size="tiny", echo = TRUE}
+    bg <- (!threshold(im.c,"10%")); fg <- (threshold(im.c,"90%"))
+    seed <- bg+2*fg; edges <- imgradient(im,"xy") %>% enorm
+    p <- 1/(1+edges); ws <- (watershed(seed,p)==1)
+    ws <- bucketfill(ws,1,1,color=2) %>% {!( . == 2) }
+    plot(im, axes=FALSE); out2 <- clean(ws,5)
+    highlight(out2,col="green")
+```
